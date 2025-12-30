@@ -17,6 +17,8 @@
 - 🐍 **8 Python Scripts** - Automation hooks for error learning, session management, and progress tracking
 - 🎭 **6 Behavioral Modes** - Adaptive AI behavior: Brainstorm, Implement, Debug, Review, Teach, Ship
 - 🔄 **Error Learning System** - Automatically learns from past mistakes and prevents recurring issues
+- 🧩 **Parallel Orchestration** - Run multiple specialized agents concurrently for different perspectives
+- 🧠 **Synthesis Reporting** - Automatically combines multi-agent outputs into cohesive project reports
 
 ---
 
@@ -88,6 +90,41 @@ claude-framework/
 ├── CLAUDE.md           # AI behavior configuration
 └── README.md           # This file
 ```
+
+---
+
+## 🔄 Hook System Flow
+
+The framework uses an intelligent hook system that automatically detects projects, learns from errors, and prevents mistakes:
+
+```mermaid
+flowchart LR
+    Start([claude]) --> SessionStart[SessionStart Hook]
+    SessionStart --> Detect[Detect Project<br/>& Tech Stack]
+    Detect --> Ready[Ready for Commands]
+    
+    Ready --> UserCmd{User Action}
+    UserCmd -->|Bash Command| PreHook[PreToolUse Hook<br/>Check History]
+    PreHook --> Execute[Execute Command]
+    Execute --> PostHook[PostToolUse Hook<br/>Learn from Result]
+    PostHook --> Ready
+    
+    UserCmd -->|Exit| SessionEnd[SessionEnd Hook<br/>Save Session]
+    SessionEnd --> End([Exit])
+    
+    style SessionStart fill:#4CAF50,color:#fff
+    style PreHook fill:#FF9800,color:#fff
+    style PostHook fill:#2196F3,color:#fff
+    style SessionEnd fill:#9C27B0,color:#fff
+```
+
+**Key Features:**
+- 🔍 **Auto-Detection:** Finds your project type (Next.js, React Native, Python, etc.)
+- 🛡️ **Error Prevention:** Warns about commands that failed before
+- 🚫 **Safety Checks:** Blocks dangerous operations
+- 📊 **Learning System:** Improves over time by tracking patterns
+
+For detailed hook architecture, see **[scripts/README.md](scripts/README.md#hook-system-architecture)**.
 
 ---
 
@@ -173,6 +210,7 @@ Python automation scripts that provide intelligent hooks:
 |--------|------|---------|
 | `session_hooks.py` | SessionStart/End | Project detection, session tracking |
 | `pre_bash.py` | PreToolUse | Error learning - warns about known issues |
+| `parallel_orchestrator.py` | CLI | Multi-agent parallel execution engine |
 | `check_prevention.py` | PreToolUse | Blocks dangerous commands |
 | `track_error.py` | PostToolUse | Records errors for learning |
 
@@ -180,6 +218,7 @@ Python automation scripts that provide intelligent hooks:
 | Script | Purpose |
 |--------|---------|
 | `progress_reporter.py` | Agent status board with rich UI |
+| `parallel_orchestrator.py` | Manual parallel execution with synthesis |
 | `session_manager.py` | Project state management |
 | `auto_preview.py` | Preview server control |
 | `explorer_helper.py` | Proactive codebase discovery |
@@ -226,6 +265,21 @@ The framework learns from mistakes to prevent recurring issues:
 
 ---
 
+## 🧠 Multi-Agent Orchestration
+
+The framework supports true parallel execution through the `parallel_orchestrator.py` engine:
+
+1. **Decomposition**: The orchestrator splits complex tasks into domain-specific sub-tasks.
+2. **Parallel Dispatch**: Specialized agents (Backend, Frontend, Security, etc.) are spawned concurrently.
+3. **State Sharing**: Agents communicate via `data/orchestrator-state.json` to avoid conflicts.
+4. **Synthesis**: A final report is generated in `data/reports/` summarizing all findings from parallel agents.
+
+```bash
+python scripts/parallel_orchestrator.py "Build a secure payment flow" --agents 3
+```
+
+---
+
 ## ⚙️ Configuration
 
 Hooks are configured in `settings.json`:
@@ -252,16 +306,65 @@ Hooks are configured in `settings.json`:
 
 ---
 
-## � Statistics
+## 📊 Statistics
 
 | Category | Count |
 |----------|-------|
-| Agents | 14 |
+| Agents | 15 |
 | Skills | 34 |
 | Commands | 9 |
-| Scripts | 8 |
+| Scripts | 9 |
 | Templates | 12 |
 | Behavioral Modes | 6 |
+| Hook Scripts | 4 |
+
+---
+
+---
+
+## 🔧 Troubleshooting
+
+### ❌ Hooks Not Working?
+
+If your `SessionStart` or `SessionEnd` hooks are not triggering, you likely need to add the `matcher` property to your hook configuration.
+
+**See [HOOKS-TROUBLESHOOTING.md](HOOKS-TROUBLESHOOTING.md) for detailed solutions.**
+
+**Quick Fix:**
+
+❌ **Wrong (won't work):**
+```json
+"SessionStart": [
+  {
+    "command": "python script.py"
+  }
+]
+```
+
+✅ **Correct (will work):**
+```json
+"SessionStart": [
+  {
+    "matcher": "startup",
+    "hooks": [
+      {
+        "type": "command",
+        "command": "python script.py"
+      }
+    ]
+  }
+]
+```
+
+**Debug your hooks:**
+```bash
+claude --debug
+```
+
+Check the debug log at `~/.claude/debug/[session-id].txt` and look for:
+- `Found 1 hook matchers` ✅ (not `Found 0` ❌)
+
+For complete troubleshooting guide, see **[HOOKS-TROUBLESHOOTING.md](HOOKS-TROUBLESHOOTING.md)**.
 
 ---
 
