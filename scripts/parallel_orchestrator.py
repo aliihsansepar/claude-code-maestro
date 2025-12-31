@@ -37,17 +37,6 @@ CLAUDE_DIR = Path.home() / ".claude"
 DATA_DIR = CLAUDE_DIR / "data"
 ORCHESTRATOR_STATE_FILE = DATA_DIR / "orchestrator-state.json"
 
-# Progress Reporter Import (using script calling method instead of dynamic loading to avoid errors)
-SCRIPTS_DIR = Path(__file__).parent
-PROGRESS_REPORTER = SCRIPTS_DIR / "progress_reporter.py"
-
-def run_progress_reporter(cmd: str, *args):
-    """Call progress_reporter.py script."""
-    try:
-        subprocess.run([sys.executable, str(PROGRESS_REPORTER), cmd, *args], capture_output=True)
-    except Exception:
-        pass
-
 class AgentTask:
     def __init__(self, agent_id: str, prompt: str, name: str = ""):
         self.agent_id = agent_id
@@ -62,8 +51,7 @@ class AgentTask:
         debug_log(f"AgentTask.execute: {self.name}, test_mode={test_mode}")
         self.status = "running"
         self.started_at = datetime.now().isoformat()
-        run_progress_reporter("update", self.name, "running", self.prompt[:50], "10")
-        
+
         try:
             if test_mode:
                 # Mock execution
@@ -73,7 +61,6 @@ class AgentTask:
                 time.sleep(sleep_time)
                 self.result = f"MOCK RESULT for {self.name}: Analyzed {self.prompt[:30]}... found 3 issues."
                 self.status = "completed"
-                run_progress_reporter("update", self.name, "completed", "Mock Done", "100")
             else:
                 # Real execution using Claude Code CLI
                 debug_log(f"Real execution: claude {self.prompt[:50]}...")
@@ -84,7 +71,7 @@ class AgentTask:
                     text=True,
                     encoding="utf-8"
                 )
-                
+
                 stdout, stderr = process.communicate()
                 debug_log(f"Process finished: {self.name}, returncode={process.returncode}")
 
@@ -92,19 +79,16 @@ class AgentTask:
                 if process.returncode != 0:
                     self.status = "failed"
                     self.error = stderr
-                    run_progress_reporter("update", self.name, "failed", stderr[:50], "100")
                     debug_log(f"Agent {self.name} failed: {stderr[:100]}")
                 else:
                     self.status = "completed"
-                    run_progress_reporter("update", self.name, "completed", "Done", "100")
                     debug_log(f"Agent {self.name} completed successfully")
-                
+
         except Exception as e:
             self.status = "failed"
             self.error = str(e)
-            run_progress_reporter("update", self.name, "failed", str(e)[:50], "0")
             debug_log(f"Agent {self.name} exception: {type(e).__name__}: {e}")
-        
+
         self.ended_at = datetime.now().isoformat()
         return self
 

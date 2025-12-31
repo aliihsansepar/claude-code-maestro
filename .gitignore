@@ -9,6 +9,3 @@ settings.local.json
 .env.*.local
 
 # docs
-
-KAYNAKCA.md
-claudecodedoc.md

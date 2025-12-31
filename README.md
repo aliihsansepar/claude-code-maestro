@@ -2,19 +2,19 @@
 
 > **AI Development Orchestrator** - Transform Claude into a powerful development team with specialized agents, intelligent skills, and automated workflows.
 
-[![Agents](https://img.shields.io/badge/Agents-14-blue)](#-agents)
-[![Skills](https://img.shields.io/badge/Skills-50-green)](#-skills)
+[![Agents](https://img.shields.io/badge/Agents-15-blue)](#-agents)
+[![Skills](https://img.shields.io/badge/Skills-40-green)](#-skills)
 [![Commands](https://img.shields.io/badge/Commands-8-orange)](#-commands)
-[![Python](https://img.shields.io/badge/Python-3.10+-yellow)](#-scripts)
+[![Python](https://img.shields.io/badge/Scripts-8-yellow)](#-scripts)
 
 ---
 
 ## ✨ Features
 
-- 🤖 **14 Specialized Agents** - Expert AI personas for frontend, backend, mobile, DevOps, and more
--  **50 Skills** - Domain knowledge resources with patterns, best practices, and templates |
+- 🤖 **15 Specialized Agents** - Expert AI personas for frontend, backend, mobile, DevOps, security, and more
+- 📚 **40 Skills** - Domain knowledge resources with patterns, best practices, and templates
 - ⚡ **8 Slash Commands** - Quick actions for creating apps, debugging, testing, and deploying
-- 🐍 **9 Python Scripts** - Automation hooks for error learning, session management, and progress tracking
+- 🐍 **8 Python Scripts** - Automation hooks for error learning, session management, and project discovery
 - 🎯 **Clean Code Standards** - CRITICAL skill for concise, direct, solution-focused code
 - 🎭 **6 Behavioral Modes** - Adaptive AI behavior: Brainstorm, Implement, Debug, Review, Teach, Ship
 - 🔄 **Error Learning System** - Automatically learns from past mistakes and prevents recurring issues
@@ -81,14 +81,13 @@ maestro/
 │   ├── enhance.md
 │   ├── debug.md
 │   └── ...
-├── scripts/             # 9 Python automation scripts
+├── scripts/             # 8 Python automation scripts
 │   ├── session_hooks.py
 │   ├── pre_bash.py
 │   ├── check_prevention.py
 │   ├── track_error.py
 │   ├── parallel_orchestrator.py
 │   ├── explorer_helper.py
-│   ├── progress_reporter.py
 │   ├── session_manager.py
 │   └── auto_preview.py
 ├── data/                # Runtime state and error database
@@ -224,7 +223,6 @@ Python automation scripts that provide intelligent hooks:
 | Script | Purpose |
 |--------|---------|
 | `parallel_orchestrator.py` | Multi-agent parallel execution engine |
-| `progress_reporter.py` | Agent status board with Rich UI |
 | `session_manager.py` | Project state management |
 | `auto_preview.py` | Preview server control |
 
@@ -320,7 +318,7 @@ Hooks are configured in `settings.json`:
 | Agents | 14 |
 | Skills | 50 (37 patterns + 12 templates + 1 README) |
 | Commands | 8 |
-| Scripts | 9 |
+| Scripts | 8 |
 | Templates | 12 |
 | Behavioral Modes | 6 |
 | Hook Scripts | 5 (session_hooks, explorer_helper, pre_bash, check_prevention, track_error) |

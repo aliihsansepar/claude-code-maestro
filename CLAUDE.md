@@ -34,7 +34,7 @@
 
 ---
 
-## 🤖 Available Agents (14)
+## 🤖 Available Agents (15)
 
 ### Orchestration Agents
 
@@ -52,7 +52,8 @@
 | `database-architect` | PostgreSQL, Prisma, schema design |
 | `devops-engineer` | PM2, deployment, CI/CD (⚠️ CRITICAL) |
 | `test-engineer` | Jest, Pytest, Playwright, TDD |
-| `security-auditor` | OWASP Top 10, vulnerability scanning |
+| `security-auditor` | OWASP Top 10:2025, vulnerability scanning |
+| `penetration-tester` | 🆕 Offensive security, PTES, red team |
 | `performance-optimizer` | Core Web Vitals, bundle optimization |
 | `mobile-developer` | React Native, Flutter, Expo |
 | `api-designer` | REST API, GraphQL, OpenAPI |
@@ -62,7 +63,7 @@
 
 ---
 
-## 📚 Skills (37)
+## 📚 Skills (40)
 
 ### Core Skills
 
@@ -105,7 +106,10 @@ skills/
 ├── database-design/
 ├── security-checklist/
 ├── testing-patterns/
-└── ... (37 total)
+├── vulnerability-scanner/ # 🆕 DAST, SAST, SCA tools
+├── red-team-tactics/     # 🆕 MITRE ATT&CK, exploitation
+├── api-security-testing/ # 🆕 OWASP API Top 10, JWT
+└── ... (40 total)
 ```
 
 ---
@@ -119,7 +123,6 @@ skills/
 | `pre_bash.py` | PreToolUse | Error learning warnings |
 | `check_prevention.py` | PreToolUse | Block dangerous commands |
 | `track_error.py` | PostToolUse | Record errors |
-| `progress_reporter.py` | - | Agent status board |
 | `parallel_orchestrator.py` | - | Parallel agent orchestrator |
 | `session_manager.py` | - | Project state management |
 | `auto_preview.py` | - | Preview server control |

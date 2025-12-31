@@ -83,5 +83,4 @@ Show current project and agent status.
 
 Status uses these scripts:
 - `session_manager.py status`
-- `progress_reporter.py status`
 - `auto_preview.py status`

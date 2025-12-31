@@ -17,7 +17,6 @@ These run automatically via `settings.json` hooks:
 
 | Script | Purpose |
 |--------|---------|
-| [progress_reporter.py](progress_reporter.py) | Agent status board (rich UI) |
 | [session_manager.py](session_manager.py) | Project state management |
 | [auto_preview.py](auto_preview.py) | Preview server control |
 | [explorer_helper.py](explorer_helper.py) | Automatic codebase discovery |
@@ -34,9 +33,6 @@ python track_error.py "command" "exit_code" "output"
 
 ### Utility Scripts (manual)
 ```bash
-# Progress reporter
-python progress_reporter.py status
-
 # Session manager
 python session_manager.py init --path /project --type nextjs
 python session_manager.py status

@@ -30,11 +30,7 @@ This command starts a new application creation process.
      - `backend-specialist` → API
      - `frontend-specialist` → UI
 
-4. **Progress Reporting**
-   - Report status with `progress_reporter.py` throughout
-   - Show Agent Status Board
-
-5. **Preview**
+4. **Preview**
    - Start with `auto_preview.py` when complete
    - Present URL to user
 
