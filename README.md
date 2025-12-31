@@ -3,7 +3,7 @@
 > **AI Development Orchestrator** - Transform Claude into a powerful development team with specialized agents, intelligent skills, and automated workflows.
 
 [![Agents](https://img.shields.io/badge/Agents-14-blue)](#-agents)
-[![Skills](https://img.shields.io/badge/Skills-37-green)](#-skills)
+[![Skills](https://img.shields.io/badge/Skills-50-green)](#-skills)
 [![Commands](https://img.shields.io/badge/Commands-8-orange)](#-commands)
 [![Python](https://img.shields.io/badge/Python-3.10+-yellow)](#-scripts)
 
@@ -12,7 +12,7 @@
 ## ✨ Features
 
 - 🤖 **14 Specialized Agents** - Expert AI personas for frontend, backend, mobile, DevOps, and more
--  **37 Skills** - Domain knowledge resources with patterns, best practices, and templates |
+-  **50 Skills** - Domain knowledge resources with patterns, best practices, and templates |
 - ⚡ **8 Slash Commands** - Quick actions for creating apps, debugging, testing, and deploying
 - 🐍 **9 Python Scripts** - Automation hooks for error learning, session management, and progress tracking
 - 🎯 **Clean Code Standards** - CRITICAL skill for concise, direct, solution-focused code
@@ -81,11 +81,16 @@ maestro/
 │   ├── enhance.md
 │   ├── debug.md
 │   └── ...
-├── scripts/             # 7 Python automation scripts
+├── scripts/             # 9 Python automation scripts
 │   ├── session_hooks.py
 │   ├── pre_bash.py
+│   ├── check_prevention.py
 │   ├── track_error.py
-│   └── ...
+│   ├── parallel_orchestrator.py
+│   ├── explorer_helper.py
+│   ├── progress_reporter.py
+│   ├── session_manager.py
+│   └── auto_preview.py
 ├── data/                # Runtime state and error database
 ├── settings.json        # Hook configuration
 ├── CLAUDE.md           # AI behavior configuration
@@ -210,20 +215,18 @@ Python automation scripts that provide intelligent hooks:
 | Script | Hook | Purpose |
 |--------|------|---------|
 | `session_hooks.py` | SessionStart/End | Project detection, session tracking |
+| `explorer_helper.py` | SessionStart | Deep project discovery |
 | `pre_bash.py` | PreToolUse | Error learning - warns about known issues |
-| `parallel_orchestrator.py` | CLI | Multi-agent parallel execution engine |
 | `check_prevention.py` | PreToolUse | Blocks dangerous commands |
 | `track_error.py` | PostToolUse | Records errors for learning |
 
 ### Utility Scripts (Manual)
 | Script | Purpose |
 |--------|---------|
-| `progress_reporter.py` | Agent status board with rich UI |
-| `parallel_orchestrator.py` | Manual parallel execution with synthesis |
+| `parallel_orchestrator.py` | Multi-agent parallel execution engine |
+| `progress_reporter.py` | Agent status board with Rich UI |
 | `session_manager.py` | Project state management |
 | `auto_preview.py` | Preview server control |
-| `explorer_helper.py` | Proactive codebase discovery |
-| `track_error.py` | Systematic error tracking |
 
 ### Dependencies
 
@@ -268,16 +271,19 @@ The framework learns from mistakes to prevent recurring issues:
 
 ## 🧠 Multi-Agent Orchestration
 
-The framework supports true parallel execution through the `parallel_orchestrator.py` engine:
+The framework supports parallel execution through the `parallel_orchestrator.py` engine:
 
-1. **Decomposition**: The orchestrator splits complex tasks into domain-specific sub-tasks.
-2. **Parallel Dispatch**: Specialized agents (Backend, Frontend, Security, etc.) are spawned concurrently.
-3. **State Sharing**: Agents communicate via `data/orchestrator-state.json` to avoid conflicts.
-4. **Synthesis**: A final report is generated in `data/reports/` summarizing all findings from parallel agents.
+1. **Task Decomposition**: The orchestrator assigns different perspectives (Security, Backend, Frontend, Testing, DevOps) to specialized agents.
+2. **Parallel Dispatch**: Agents are spawned concurrently using ThreadPoolExecutor and work independently.
+3. **State Tracking**: Agent status and results are tracked in `data/orchestrator-state.json` for monitoring.
+4. **Synthesis**: After all agents complete, a unified synthesis report is generated in `data/reports/`.
 
 ```bash
-python scripts/parallel_orchestrator.py "Build a secure payment flow" --agents 3
+python scripts/parallel_orchestrator.py "Analyze this codebase" --agents 3
+python scripts/parallel_orchestrator.py "Analyze this codebase" --agents 5 --test  # Test mode with mock results
 ```
+
+**Note:** Agents work independently and do not directly communicate with each other. Each agent produces its own output, which is then synthesized into a final report.
 
 ---
 
@@ -312,12 +318,12 @@ Hooks are configured in `settings.json`:
 | Category | Count |
 |----------|-------|
 | Agents | 14 |
-| Skills | 37 |
+| Skills | 50 (37 patterns + 12 templates + 1 README) |
 | Commands | 8 |
 | Scripts | 9 |
 | Templates | 12 |
 | Behavioral Modes | 6 |
-| Hook Scripts | 4 |
+| Hook Scripts | 5 (session_hooks, explorer_helper, pre_bash, check_prevention, track_error) |
 
 ---
 
