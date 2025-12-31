@@ -11,6 +11,7 @@ Usage:
 import json
 import sys
 import os
+import platform
 from pathlib import Path
 from datetime import datetime
 from typing import Dict, Any, Optional
@@ -37,6 +38,61 @@ CURRENT_PROJECT_FILE = DATA_DIR / "current-project.json"
 GLOBAL_STATS_FILE = DATA_DIR / "global-stats.json"
 
 
+def get_os_info() -> Dict[str, str]:
+    """Detect operating system information."""
+    system = platform.system().lower()
+
+    if system == "windows":
+        return {
+            "name": "Windows",
+            "shell": "PowerShell / CMD",
+            "terminal": "PowerShell",
+            "package_manager": "winget / chocolatey",
+            "path_separator": "\\"
+        }
+    elif system == "darwin":
+        return {
+            "name": "macOS",
+            "shell": "zsh / bash",
+            "terminal": "Terminal.app / iTerm2",
+            "package_manager": "brew",
+            "path_separator": "/"
+        }
+    elif system == "linux":
+        # Try to detect specific distro
+        try:
+            with open("/etc/os-release", "r") as f:
+                os_release = f.read()
+                if "ubuntu" in os_release.lower():
+                    distro = "Ubuntu"
+                elif "fedora" in os_release.lower():
+                    distro = "Fedora"
+                elif "debian" in os_release.lower():
+                    distro = "Debian"
+                elif "arch" in os_release.lower():
+                    distro = "Arch Linux"
+                else:
+                    distro = "Linux"
+        except:
+            distro = "Linux"
+
+        return {
+            "name": distro,
+            "shell": "bash / zsh",
+            "terminal": "Terminal",
+            "package_manager": "apt / yum / dnf",
+            "path_separator": "/"
+        }
+    else:
+        return {
+            "name": "Unknown",
+            "shell": "Unknown",
+            "terminal": "Unknown",
+            "package_manager": "Unknown",
+            "path_separator": "/"
+        }
+
+
 def get_project_dir(project_path: str) -> Path:
     """Return data directory for project."""
     project_name = Path(project_path).name
@@ -61,26 +117,26 @@ def detect_project_type(project_path: str, max_depth: int = 3) -> Dict[str, Any]
         "platform": None,
         "detectedAt": None  # Which directory was it detected in
     }
-    
+
     def find_project_files(current_path: Path, depth: int = 0) -> Optional[Dict[str, Any]]:
         """Recursively search for project files."""
         if depth > max_depth:
             return None
-            
+
         # Node.js project
         package_json = current_path / "package.json"
         if package_json.exists():
             try:
                 pkg = json.loads(package_json.read_text())
                 deps = {**pkg.get("dependencies", {}), **pkg.get("devDependencies", {})}
-                
+
                 result = {
                     "projectType": "node",
                     "framework": None,
                     "platform": None,
                     "detectedAt": str(current_path)
                 }
-                
+
                 if "react-native" in deps or "expo" in deps:
                     result["framework"] = "react-native"
                     result["platform"] = "mobile"
@@ -102,11 +158,11 @@ def detect_project_type(project_path: str, max_depth: int = 3) -> Dict[str, Any]
                 else:
                     result["framework"] = "node"
                     result["platform"] = "general"
-                    
+
                 return result
             except:
                 pass
-        
+
         # Python project
         if (current_path / "requirements.txt").exists() or (current_path / "pyproject.toml").exists():
             result = {
@@ -122,7 +178,7 @@ def detect_project_type(project_path: str, max_depth: int = 3) -> Dict[str, Any]
                 result["framework"] = "flask-or-fastapi"
                 result["platform"] = "api"
             return result
-        
+
         # Rust project
         if (current_path / "Cargo.toml").exists():
             return {
@@ -131,7 +187,7 @@ def detect_project_type(project_path: str, max_depth: int = 3) -> Dict[str, Any]
                 "platform": "general",
                 "detectedAt": str(current_path)
             }
-        
+
         # Go project
         if (current_path / "go.mod").exists():
             return {
@@ -140,7 +196,7 @@ def detect_project_type(project_path: str, max_depth: int = 3) -> Dict[str, Any]
                 "platform": "general",
                 "detectedAt": str(current_path)
             }
-        
+
         # Search in subdirectories
         try:
             for item in current_path.iterdir():
@@ -150,54 +206,263 @@ def detect_project_type(project_path: str, max_depth: int = 3) -> Dict[str, Any]
                         return result
         except PermissionError:
             pass
-            
+
         return None
-    
+
     # Start recursive search
     result = find_project_files(path)
     if result:
         analysis.update(result)
-    
+
     return analysis
 
 
-def get_recent_errors(project_path: str, limit: int = 3) -> list:
-    """Get recent errors for project."""
-    project_dir = get_project_dir(project_path)
-    error_tracker_file = project_dir / "error-tracker.json"
-    
-    if not error_tracker_file.exists():
-        return []
-    
+def get_os_commands(os_info: Dict[str, str]) -> str:
+    """Get OS-specific terminal commands."""
+    os_name = os_info.get("name", "Unknown")
+    shell = os_info.get("shell", "Unknown")
+
+    if os_name == "Windows":
+        return """#### 🪟 Windows Terminal Commands
+
+##### PowerShell
+```powershell
+ls                    # List files
+cd <path>             # Change directory
+pwd                   # Current directory
+mkdir <dir>            # Create directory
+rm <file>             # Remove file
+rm -r <dir>           # Remove directory
+cat <file>            # View file
+echo $env:PATH        # Show environment variables
+```
+
+##### Common Tasks
+- **File Explorer**: `start .`
+- **Open with default app**: `start <file>`
+- **Process manager**: `taskmgr` or `Get-Process`
+- **Network info**: `ipconfig` or `Get-NetIPAddress`
+- **System info**: `systeminfo`
+
+##### Package Managers
+```powershell
+winget install <app>     # Install application
+winget search <app>      # Search for application
+winget upgrade <app>     # Upgrade application
+winget list              # List installed apps
+```
+
+---
+
+"""
+
+    elif os_name == "macOS":
+        return """#### 🍎 macOS Terminal Commands
+
+##### Shell (zsh/bash)
+```bash
+ls                    # List files
+cd <path>             # Change directory
+pwd                   # Current directory
+mkdir <dir>            # Create directory
+rm <file>             # Remove file
+rm -rf <dir>          # Remove directory
+cat <file>            # View file
+echo $PATH            # Show environment variables
+```
+
+##### Common Tasks
+- **Finder**: `open .` (current folder in Finder)
+- **Text edit**: `open -a TextEdit <file>`
+- **System monitor**: `Activity Monitor` app
+- **Network info**: `ifconfig` or `networksetup -listallhardwareports`
+- **System info**: `sw_vers`
+
+##### Homebrew Package Manager
+```bash
+brew install <formula>    # Install package
+brew search <formula>     # Search for package
+brew upgrade <formula>    # Upgrade package
+brew list                 # List installed packages
+brew update               # Update Homebrew
+```
+
+---
+
+"""
+
+    else:  # Linux
+        return """#### 🐧 Linux Terminal Commands
+
+##### Shell (bash/zsh)
+```bash
+ls                    # List files
+cd <path>             # Change directory
+pwd                   # Current directory
+mkdir <dir>            # Create directory
+rm <file>             # Remove file
+rm -rf <dir>          # Remove directory
+cat <file>            # View file
+echo $PATH            # Show environment variables
+```
+
+##### Common Tasks
+- **File manager**: `xdg-open .` or `nautilus .`
+- **Text editor**: `nano <file>`, `vim <file>`, or `code <file>`
+- **Process monitor**: `htop` or `top`
+- **Network info**: `ip addr` or `ifconfig`
+- **Disk usage**: `df -h` (disk free), `du -sh <dir>` (directory size)
+
+##### Package Managers
+```bash
+# Debian/Ubuntu (apt)
+sudo apt install <package>      # Install
+sudo apt update                 # Update lists
+sudo apt upgrade                # Upgrade packages
+apt search <package>            # Search
+
+# Fedora/RHEL (dnf/yum)
+sudo dnf install <package>      # Install
+sudo dnf update                 # Update
+sudo dnf upgrade                # Upgrade
+
+# Arch (pacman)
+sudo pacman -S <package>        # Install
+sudo pacman -Syu                # Update & upgrade
+```
+
+---
+
+"""
+
+
+    return "*No specific commands for this OS*"
+
+
+def load_clean_code_skill() -> str:
+    """Load clean-code skill content."""
+    skill_path = Path(__file__).parent.parent / "skills" / "clean-code" / "SKILL.md"
     try:
-        tracker = json.loads(error_tracker_file.read_text())
-        errors = tracker.get("errors", [])
-        
-        # Get last N errors
-        recent = errors[-limit:] if errors else []
-        
-        return [
-            {
-                "type": e.get("errorType"),
-                "pattern": e.get("pattern"),
-                "solution": e.get("solution")
-            }
-            for e in recent
-        ]
-    except:
-        return []
+        if skill_path.exists():
+            content = skill_path.read_text(encoding="utf-8")
+            # Extract the content after the frontmatter (between --- markers)
+            parts = content.split('---', 2)
+            if len(parts) >= 3:
+                return parts[2].strip()
+            return content
+    except Exception as e:
+        debug_log(f"Could not load clean-code skill: {e}")
+    return ""
+
+
+def generate_context_markdown(session_info: Dict, analysis: Dict, os_info: Dict[str, str]) -> str:
+    """Generate markdown context for AI to read."""
+    project_name = session_info.get("projectName", "Unknown")
+    framework = analysis.get("framework", "Unknown")
+    platform = analysis.get("platform", "Unknown")
+    project_type = analysis.get("projectType", "Unknown")
+    project_path = session_info.get("projectPath", "")
+
+    os_name = os_info.get("name", "Unknown")
+    os_shell = os_info.get("shell", "Unknown")
+
+    # Load clean code skill
+    clean_code_content = load_clean_code_skill()
+
+    md = f"""# 📁 Project Context
+
+**Project:** `{project_name}`
+**Framework:** `{framework}`
+**Type:** `{project_type}`
+**Path:** `{project_path}`
+**Detected:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+
+---
+
+## 🖥️ Operating System
+
+| Property | Value |
+|----------|-------|
+| **OS** | {os_name} |
+| **Shell** | {os_shell} |
+
+---
+
+## ⚡ Terminal Commands (Current OS)
+
+{get_os_commands(os_info)}
+## 🎯 Project Environment
+
+| Property | Value |
+|----------|-------|
+| **Project Type** | {project_type.upper() if project_type != 'Unknown' else 'Unknown'} |
+| **Framework** | {framework.upper() if framework != 'Unknown' else 'None'} |
+| **Platform** | {platform.upper() if platform != 'Unknown' else 'General'} |
+
+---
+
+## 📋 Quick Project Commands
+
+{get_project_commands(project_type, framework)}
+
+---
+
+{clean_code_content}
+
+---
+
+*This file is auto-generated by Maestro session hooks. Do not edit manually.*
+"""
+    return md
+
+
+def get_project_commands(project_type: str, framework: str) -> str:
+    """Get project-specific terminal commands."""
+    if project_type == "node":
+        base = """#### Package Management
+```bash
+npm install              # Install dependencies
+npm install <package>    # Add package
+```
+
+#### Development
+```bash
+npm run dev              # Start dev server
+npm run build            # Build for production
+```
+"""
+        if framework == "nextjs":
+            return base + """#### Next.js
+```bash
+npx next dev             # Development
+npx next build           # Production build
+```
+"""
+        return base
+    elif project_type == "python":
+        return """#### Python
+```bash
+pip install -r requirements.txt    # Install dependencies
+python manage.py runserver         # Django dev server
+python -m pytest                   # Run tests
+```
+"""
+    return ""
 
 
 def session_start(project_path: str, silent: bool = False):
     """Session start."""
     debug_log(f"SESSION_START called: project_path={project_path}, silent={silent}")
 
+    # Detect OS
+    os_info = get_os_info()
+    debug_log(f"OS detected: {os_info['name']}")
+
     # Create project-based data directory
     project_dir = ensure_project_data_dir(project_path)
 
     # Detect project
     analysis = detect_project_type(project_path)
-    recent_errors = get_recent_errors(project_path)
 
     # Create session info
     session_info = {
@@ -205,13 +470,13 @@ def session_start(project_path: str, silent: bool = False):
         "projectName": Path(project_path).name,
         "timestamp": datetime.now().isoformat(),
         "analysis": analysis,
-        "recentErrors": recent_errors
+        "os": os_info
     }
 
     # Save session stats to project directory
     session_stats_file = project_dir / "session-stats.json"
     session_stats_file.write_text(json.dumps(session_info, indent=2, ensure_ascii=False))
-    
+
     # Also save current project reference globally
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     CURRENT_PROJECT_FILE.write_text(json.dumps({
@@ -221,28 +486,18 @@ def session_start(project_path: str, silent: bool = False):
         "lastAccess": datetime.now().isoformat()
     }, indent=2, ensure_ascii=False))
 
-    # Output for Claude
-    output = {
-        "projectPath": project_path,
-        "timestamp": datetime.now().isoformat(),
-        "analysis": analysis
-    }
+    # Create context file in .claude directory for AI to read
+    claude_dir = Path(project_path) / ".claude"
+    claude_dir.mkdir(parents=True, exist_ok=True)
+    context_file = claude_dir / "rules.md"
+    context_md = generate_context_markdown(session_info, analysis, os_info)
+    context_file.write_text(context_md, encoding="utf-8")
 
-    if recent_errors:
-        output["recentErrors"] = recent_errors
-
-    sys.stdout.write(json.dumps(output, ensure_ascii=False) + "\n")
-
-    # Human readable output (only if not silent)
+    # Output for Claude (markdown format for AI to parse)
     if not silent:
-        if analysis.get("framework"):
-            print(f"\n📁 Project: {Path(project_path).name}")
-            print(f"🔧 Framework: {analysis['framework']}")
-            if analysis.get("platform"):
-                print(f"🎯 Platform: {analysis['platform']}")
+        print("\n" + context_md)
 
-        if recent_errors:
-            print(f"\n⚠️ Recent errors in this project: {len(recent_errors)}")
+    debug_log("SESSION_START completed successfully")
 
 
 def session_end(project_path: str, silent: bool = False):
@@ -250,7 +505,6 @@ def session_end(project_path: str, silent: bool = False):
     # Project-based data directory
     project_dir = get_project_dir(project_path)
     session_stats_file = project_dir / "session-stats.json"
-    error_tracker_file = project_dir / "error-tracker.json"
 
     # Load current session
     session_stats = {}
@@ -267,15 +521,6 @@ def session_end(project_path: str, silent: bool = False):
         try:
             start_time = datetime.fromisoformat(started_at)
             duration = str(datetime.now() - start_time)
-        except:
-            pass
-
-    # Update tracker with session end
-    if error_tracker_file.exists():
-        try:
-            tracker = json.loads(error_tracker_file.read_text())
-            tracker["lastSessionEnd"] = datetime.now().isoformat()
-            error_tracker_file.write_text(json.dumps(tracker, indent=2, ensure_ascii=False))
         except:
             pass
 

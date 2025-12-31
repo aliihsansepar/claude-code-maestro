@@ -118,11 +118,8 @@ skills/
 
 | Script | Hook | Purpose |
 |--------|------|---------|
-| `session_hooks.py` | SessionStart/End | Project detection |
+| `session_hooks.py` | SessionStart/End | Project detection, session tracking |
 | `explorer_helper.py` | SessionStart | Deep project discovery |
-| `pre_bash.py` | PreToolUse | Error learning warnings |
-| `check_prevention.py` | PreToolUse | Block dangerous commands |
-| `track_error.py` | PostToolUse | Record errors |
 | `parallel_orchestrator.py` | - | Parallel agent orchestrator |
 | `session_manager.py` | - | Project state management |
 | `auto_preview.py` | - | Preview server control |
@@ -181,16 +178,6 @@ pip install rich pydantic
 
 ---
 
-## �🔧 Error Learning System
-
-This workspace includes Terminal Error Learning:
-
-- Errors are automatically recorded to `data/error-database.json`
-- Similar commands trigger warnings with past errors
-- Solutions are learned and suggested
-
----
-
 ## 📁 Project Structure
 
 ```
@@ -198,8 +185,8 @@ c:\claude\
 ├── agents/          # 14 specialized agents
 ├── skills/          # 37 knowledge resources
 ├── commands/        # 8 slash commands
-├── scripts/         # 9 Python automation scripts
-├── data/            # Runtime state and error database
+├── scripts/         # 5 Python automation scripts
+├── data/            # Runtime state
 ├── settings.json    # Hook configuration
 ├── README.md        # Project documentation
 └── CLAUDE.md        # This file
@@ -214,13 +201,24 @@ Hooks are configured in `settings.json`:
 ```json
 {
   "hooks": {
-    "SessionStart": [{ "command": "python session_hooks.py start" }],
-    "PreToolUse": [
-      { "command": "python pre_bash.py \"$TOOL_INPUT\"" },
-      { "command": "python check_prevention.py \"$TOOL_INPUT\"" }
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [{
+          "type": "command",
+          "command": "python scripts/session_hooks.py start --silent"
+        }]
+      }
     ],
-    "PostToolUse": [{ "command": "python track_error.py ..." }],
-    "SessionEnd": [{ "command": "python session_hooks.py end" }]
+    "SessionEnd": [
+      {
+        "matcher": "",
+        "hooks": [{
+          "type": "command",
+          "command": "python scripts/session_hooks.py end --silent"
+        }]
+      }
+    ]
   }
 }
 ```
@@ -234,7 +232,7 @@ Hooks are configured in `settings.json`:
 | Agents | 14 |
 | Skills | 37 |
 | Commands | 8 |
-| Scripts | 9 |
+| Scripts | 5 |
 | Templates | 12 |
 
 ---

@@ -19,11 +19,10 @@ Bu plan, **Claude Code CLI**'yı tam özellikli bir **AI Full-Stack Development 
 
 **Kullanım Senaryosu:**
 Kullanıcı, tek bir AI'ya (Claude Code CLI) plan dosyasındaki MASTER PROMPT'u verir. AI otomatik olarak 10 specialized agent spawn eder ve paralel çalışarak tüm sistemi kurar:
-- 6 PowerShell hook script
-- 10 specialized subagent
-- 26 agent skill
-- 9 slash command
-- Terminal Error Learning database
+- 5 Python hook script
+- 15 specialized subagent
+- 40 agent skill
+- 8 slash command
 
 ---
 
@@ -55,12 +54,9 @@ Kullanıcı, tek bir AI'ya (Claude Code CLI) plan dosyasındaki MASTER PROMPT'u 
 **Kullanım**: Kullanıcının mevcut setup'ını analiz
 **Elde Edilen Bilgiler**:
 - Custom API endpoint: Z.AI (GLM modelleri kullanılıyor)
-- 5 hook tanımlı ama script dosyaları yok:
-  - `onSessionStart`: session-start.ps1
-  - `onPromptSubmit`: analyze-prompt.ps1
-  - `onPostToolUse`: track-error.ps1
-  - `onPreToolUse`: check-prevention.ps1
-  - `onSessionEnd`: session-end.ps1
+- 2 hook tanımlı:
+  - `SessionStart`: session_hooks.py start, explorer_helper.py
+  - `SessionEnd`: session_hooks.py end
 - MCP servers: Context7, filesystem, sequential-thinking
 - Windows ortamı (PowerShell 5.1+)
 

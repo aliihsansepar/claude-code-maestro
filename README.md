@@ -5,7 +5,7 @@
 [![Agents](https://img.shields.io/badge/Agents-15-blue)](#-agents)
 [![Skills](https://img.shields.io/badge/Skills-40-green)](#-skills)
 [![Commands](https://img.shields.io/badge/Commands-8-orange)](#-commands)
-[![Python](https://img.shields.io/badge/Scripts-8-yellow)](#-scripts)
+[![Python](https://img.shields.io/badge/Scripts-5-yellow)](#-scripts)
 
 ---
 
@@ -14,10 +14,10 @@
 - 🤖 **15 Specialized Agents** - Expert AI personas for frontend, backend, mobile, DevOps, security, and more
 - 📚 **40 Skills** - Domain knowledge resources with patterns, best practices, and templates
 - ⚡ **8 Slash Commands** - Quick actions for creating apps, debugging, testing, and deploying
-- 🐍 **8 Python Scripts** - Automation hooks for error learning, session management, and project discovery
+- 🐍 **5 Python Scripts** - Automation hooks for session management and project discovery
 - 🎯 **Clean Code Standards** - CRITICAL skill for concise, direct, solution-focused code
 - 🎭 **6 Behavioral Modes** - Adaptive AI behavior: Brainstorm, Implement, Debug, Review, Teach, Ship
-- 🔄 **Error Learning System** - Automatically learns from past mistakes and prevents recurring issues
+- 🔄 **Project Detection** - Automatically detects project type and tech stack
 - 🧩 **Parallel Orchestration** - Run multiple specialized agents concurrently for different perspectives
 - 🧠 **Synthesis Reporting** - Automatically combines multi-agent outputs into cohesive project reports
 
@@ -81,16 +81,13 @@ maestro/
 │   ├── enhance.md
 │   ├── debug.md
 │   └── ...
-├── scripts/             # 8 Python automation scripts
+├── scripts/             # 5 Python automation scripts
 │   ├── session_hooks.py
-│   ├── pre_bash.py
-│   ├── check_prevention.py
-│   ├── track_error.py
 │   ├── parallel_orchestrator.py
 │   ├── explorer_helper.py
 │   ├── session_manager.py
 │   └── auto_preview.py
-├── data/                # Runtime state and error database
+├── data/                # Runtime state
 ├── settings.json        # Hook configuration
 ├── CLAUDE.md           # AI behavior configuration
 └── README.md           # This file
@@ -125,9 +122,8 @@ flowchart LR
 
 **Key Features:**
 - 🔍 **Auto-Detection:** Finds your project type (Next.js, React Native, Python, etc.)
-- 🛡️ **Error Prevention:** Warns about commands that failed before
-- 🚫 **Safety Checks:** Blocks dangerous operations
-- 📊 **Learning System:** Improves over time by tracking patterns
+- 📊 **Project Context:** Remembers each project separately
+- 🔍 **Deep Discovery:** Scans project structure and dependencies
 
 For detailed hook architecture, see **[scripts/README.md](scripts/README.md#hook-system-architecture)**.
 
@@ -215,9 +211,6 @@ Python automation scripts that provide intelligent hooks:
 |--------|------|---------|
 | `session_hooks.py` | SessionStart/End | Project detection, session tracking |
 | `explorer_helper.py` | SessionStart | Deep project discovery |
-| `pre_bash.py` | PreToolUse | Error learning - warns about known issues |
-| `check_prevention.py` | PreToolUse | Blocks dangerous commands |
-| `track_error.py` | PostToolUse | Records errors for learning |
 
 ### Utility Scripts (Manual)
 | Script | Purpose |
@@ -249,20 +242,27 @@ The framework adapts its behavior based on context:
 
 ---
 
-## 🔄 Error Learning System
+## 🔄 Hook System Flow
 
-The framework learns from mistakes to prevent recurring issues:
+The framework uses an intelligent hook system that automatically detects projects:
 
-1. **Track** - Errors are automatically recorded with command context
-2. **Learn** - Patterns are extracted and stored in error database
-3. **Warn** - Similar commands trigger warnings with past error info
-4. **Suggest** - Solutions from resolved errors are recommended
+```mermaid
+flowchart LR
+    Start([claude]) --> SessionStart[SessionStart Hook]
+    SessionStart --> Detect[Detect Project<br/>& Tech Stack]
+    Detect --> Explore[Deep Project Scan<br/>& Structure Analysis]
+    Explore --> Ready[Ready for Commands]
 
-```
-⚠️ Warning: Similar command failed before
-   Command: npm install broken-package
-   Error: npm ERR! 404 Not Found
-   Suggestion: Check package name spelling or try npm cache clean
+    Ready --> UserCmd{User Action}
+    UserCmd -->|Chat Message| AIResponse[AI Response]
+    UserCmd -->|Bash Command| Execute[Execute Command]
+
+    Execute --> Ready
+    UserCmd -->|Exit| SessionEnd[SessionEnd Hook<br/>Save Session]
+    SessionEnd --> End([Exit])
+
+    style SessionStart fill:#4CAF50,color:#fff
+    style SessionEnd fill:#9C27B0,color:#fff
 ```
 
 ---
@@ -293,17 +293,22 @@ Hooks are configured in `settings.json`:
 {
   "hooks": {
     "SessionStart": [
-      { "command": "python scripts/session_hooks.py start" }
-    ],
-    "PreToolUse": [
-      { "command": "python scripts/pre_bash.py \"$TOOL_INPUT\"" },
-      { "command": "python scripts/check_prevention.py \"$TOOL_INPUT\"" }
-    ],
-    "PostToolUse": [
-      { "command": "python scripts/track_error.py ..." }
+      {
+        "matcher": "startup",
+        "hooks": [{
+          "type": "command",
+          "command": "python scripts/session_hooks.py start --silent"
+        }]
+      }
     ],
     "SessionEnd": [
-      { "command": "python scripts/session_hooks.py end" }
+      {
+        "matcher": "",
+        "hooks": [{
+          "type": "command",
+          "command": "python scripts/session_hooks.py end --silent"
+        }]
+      }
     ]
   }
 }
@@ -318,10 +323,10 @@ Hooks are configured in `settings.json`:
 | Agents | 14 |
 | Skills | 50 (37 patterns + 12 templates + 1 README) |
 | Commands | 8 |
-| Scripts | 8 |
+| Scripts | 5 |
 | Templates | 12 |
 | Behavioral Modes | 6 |
-| Hook Scripts | 5 (session_hooks, explorer_helper, pre_bash, check_prevention, track_error) |
+| Hook Scripts | 2 (session_hooks, explorer_helper) |
 
 ---
 

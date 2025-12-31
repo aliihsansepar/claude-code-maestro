@@ -88,36 +88,6 @@ If your hooks are not triggering when you run `claude`, follow these steps:
 ]
 ```
 
-#### PreToolUse Hook
-```json
-"PreToolUse": [
-  {
-    "matcher": "Bash",
-    "hooks": [
-      {
-        "type": "command",
-        "command": "python \"%USERPROFILE%\\.claude\\scripts\\pre_bash.py\" \"$TOOL_INPUT\""
-      }
-    ]
-  }
-]
-```
-
-#### PostToolUse Hook
-```json
-"PostToolUse": [
-  {
-    "matcher": "Bash",
-    "hooks": [
-      {
-        "type": "command",
-        "command": "python \"%USERPROFILE%\\.claude\\scripts\\track_error.py\" \"$TOOL_INPUT\" \"$EXIT_CODE\" \"$TOOL_OUTPUT\""
-      }
-    ]
-  }
-]
-```
-
 ### 💡 Key Points
 
 1. **`matcher` is required** for SessionStart/SessionEnd hooks
