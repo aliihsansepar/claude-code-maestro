@@ -2,18 +2,18 @@
 
 > **AI Development Orchestrator** - Transform Claude into a powerful development team with specialized agents, intelligent skills, and automated workflows.
 
-[![Agents](https://img.shields.io/badge/Agents-15-blue)](#-agents)
-[![Skills](https://img.shields.io/badge/Skills-40-green)](#-skills)
-[![Commands](https://img.shields.io/badge/Commands-8-orange)](#-commands)
+[![Agents](https://img.shields.io/badge/Agents-16-blue)](#-agents)
+[![Skills](https://img.shields.io/badge/Skills-38-green)](#-skills)
+[![Commands](https://img.shields.io/badge/Commands-9-orange)](#-commands)
 [![Python](https://img.shields.io/badge/Scripts-5-yellow)](#-scripts)
 
 ---
 
 ## ✨ Features
 
-- 🤖 **15 Specialized Agents** - Expert AI personas for frontend, backend, mobile, DevOps, security, and more
-- 📚 **40 Skills** - Domain knowledge resources with patterns, best practices, and templates
-- ⚡ **8 Slash Commands** - Quick actions for creating apps, debugging, testing, and deploying
+- 🤖 **16 Specialized Agents** - Expert AI personas for frontend, backend, mobile, DevOps, security, and more
+- 📚 **38 Skills** - Domain knowledge resources with patterns, best practices, and templates
+- ⚡ **9 Slash Commands** - Quick actions for creating apps, debugging, testing, and deploying
 - 🐍 **5 Python Scripts** - Automation hooks for session management and project discovery
 - 🎯 **Clean Code Standards** - CRITICAL skill for concise, direct, solution-focused code
 - 🎭 **6 Behavioral Modes** - Adaptive AI behavior: Brainstorm, Implement, Debug, Review, Teach, Ship
@@ -60,13 +60,13 @@ The framework will:
 
 ```
 maestro/
-├── agents/              # 12 specialized AI agents
+├── agents/              # 16 specialized AI agents
 │   ├── frontend-specialist.md
 │   ├── backend-specialist.md
 │   ├── mobile-developer.md
 │   ├── devops-engineer.md
 │   └── ...
-├── skills/              # 31 knowledge resources
+├── skills/              # 38 knowledge resources
 │   ├── app-builder/
 │   ├── behavioral-modes/
 │   ├── react-patterns/
@@ -76,7 +76,7 @@ maestro/
 │   │   ├── react-native-app/
 │   │   └── nextjs-static/
 │   └── ...
-├── commands/            # 8 slash commands
+├── commands/            # 9 slash commands
 │   ├── create.md
 │   ├── enhance.md
 │   ├── debug.md
@@ -97,26 +97,24 @@ maestro/
 
 ## 🔄 Hook System Flow
 
-The framework uses an intelligent hook system that automatically detects projects, learns from errors, and prevents mistakes:
+The framework uses an intelligent hook system that automatically detects projects and manages sessions:
 
 ```mermaid
 flowchart LR
     Start([claude]) --> SessionStart[SessionStart Hook]
     SessionStart --> Detect[Detect Project<br/>& Tech Stack]
-    Detect --> Ready[Ready for Commands]
+    Detect --> Explore[Deep Project Scan<br/>& Structure Analysis]
+    Explore --> Ready[Ready for Commands]
     
     Ready --> UserCmd{User Action}
-    UserCmd -->|Bash Command| PreHook[PreToolUse Hook<br/>Check History]
-    PreHook --> Execute[Execute Command]
-    Execute --> PostHook[PostToolUse Hook<br/>Learn from Result]
-    PostHook --> Ready
+    UserCmd -->|Chat Message| AIResponse[AI Response]
+    UserCmd -->|Bash Command| Execute[Execute Command]
+    Execute --> Ready
     
     UserCmd -->|Exit| SessionEnd[SessionEnd Hook<br/>Save Session]
     SessionEnd --> End([Exit])
     
     style SessionStart fill:#4CAF50,color:#fff
-    style PreHook fill:#FF9800,color:#fff
-    style PostHook fill:#2196F3,color:#fff
     style SessionEnd fill:#9C27B0,color:#fff
 ```
 
@@ -124,6 +122,7 @@ flowchart LR
 - 🔍 **Auto-Detection:** Finds your project type (Next.js, React Native, Python, etc.)
 - 📊 **Project Context:** Remembers each project separately
 - 🔍 **Deep Discovery:** Scans project structure and dependencies
+- 🖥️ **OS Detection:** Detects OS and injects appropriate terminal commands
 
 For detailed hook architecture, see **[scripts/README.md](scripts/README.md#hook-system-architecture)**.
 
@@ -320,9 +319,9 @@ Hooks are configured in `settings.json`:
 
 | Category | Count |
 |----------|-------|
-| Agents | 14 |
-| Skills | 50 (37 patterns + 12 templates + 1 README) |
-| Commands | 8 |
+| Agents | 16 |
+| Skills | 38 |
+| Commands | 9 |
 | Scripts | 5 |
 | Templates | 12 |
 | Behavioral Modes | 6 |
