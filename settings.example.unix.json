@@ -1,0 +1,30 @@
+{
+    "hooks": {
+        "SessionStart": [
+            {
+                "matcher": "startup",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "python3 ~/.claude/scripts/session_hooks.py start"
+                    },
+                    {
+                        "type": "command",
+                        "command": "python3 ~/.claude/scripts/explorer_helper.py . --silent"
+                    }
+                ]
+            }
+        ],
+        "SessionEnd": [
+            {
+                "matcher": "",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "python3 ~/.claude/scripts/session_hooks.py end --silent"
+                    }
+                ]
+            }
+        ]
+    }
+}
