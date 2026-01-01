@@ -246,7 +246,9 @@ c:\claude\
 
 ## ⚙️ Hook Configuration
 
-Hooks are configured in `settings.json`:
+Hooks are configured in `settings.json` (platform-specific):
+
+### Windows (`settings.example.windows.json`)
 
 ```json
 {
@@ -254,24 +256,73 @@ Hooks are configured in `settings.json`:
     "SessionStart": [
       {
         "matcher": "startup",
-        "hooks": [{
-          "type": "command",
-          "command": "python scripts/session_hooks.py start --silent"
-        }]
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"%USERPROFILE%\\.claude\\scripts\\session_hooks.py\" start"
+          },
+          {
+            "type": "command",
+            "command": "python \"%USERPROFILE%\\.claude\\scripts\\explorer_helper.py\" . --silent"
+          }
+        ]
       }
     ],
     "SessionEnd": [
       {
         "matcher": "",
-        "hooks": [{
-          "type": "command",
-          "command": "python scripts/session_hooks.py end --silent"
-        }]
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"%USERPROFILE%\\.claude\\scripts\\session_hooks.py\" end --silent"
+          }
+        ]
       }
     ]
   }
 }
 ```
+
+### macOS/Linux (`settings.example.unix.json`)
+
+```json
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/scripts/session_hooks.py start"
+          },
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/scripts/explorer_helper.py . --silent"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/scripts/session_hooks.py end --silent"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+**Key Differences:**
+- **Windows:** Uses `python` and `%USERPROFILE%\.claude\` paths
+- **macOS/Linux:** Uses `python3` and `~/.claude/` paths
+- **SessionStart:** Runs both `session_hooks.py` and `explorer_helper.py`
+- **SessionEnd:** Only runs `session_hooks.py` with `--silent` flag
 
 ---
 
