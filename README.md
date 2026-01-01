@@ -23,6 +23,81 @@
 
 ---
 
+## 📦 Installation
+
+Maestro supports **Windows, macOS, and Linux** with automated cross-platform installation.
+
+### Prerequisites
+
+- Python 3.10+
+- Node.js 23+ (for native TypeScript & SQLite support)
+- Claude Code or compatible AI assistant
+
+### Quick Install
+
+```bash
+# Clone the repository
+git clone https://github.com/xenitV1/claude-code-maestro.git
+cd claude-code-maestro
+
+# Install dependencies and setup
+make install
+
+# Verify installation
+make verify
+```
+
+The installer will:
+- ✅ Detect your operating system automatically
+- ✅ Install Python dependencies (rich, pydantic)
+- ✅ Copy scripts to `~/.claude/scripts/`
+- ✅ Install platform-specific settings to `~/.claude/settings.json`
+- ✅ Create data directories
+
+### Platform-Specific Settings
+
+The framework uses different settings files for each platform:
+
+| Platform | Settings File | Python Command | Path Format |
+|----------|--------------|----------------|-------------|
+| **macOS/Linux** | `settings.example.unix.json` | `python3` | `~/.claude/` |
+| **Windows** | `settings.example.windows.json` | `python` | `%USERPROFILE%\.claude\` |
+
+Settings are automatically selected during installation based on your OS.
+
+### Manual Installation
+
+If you prefer manual setup or don't have `make`:
+
+```bash
+# Install Python dependencies
+pip install rich pydantic
+
+# Run interactive setup
+python scripts/setup.py
+
+# Or quick install (no prompts)
+python scripts/setup.py --quick
+```
+
+### Verify Installation
+
+```bash
+# Check installation status
+make verify
+
+# Or manually
+claude --debug
+```
+
+Look for `Found 1 hook matchers` in the debug output.
+
+### Troubleshooting
+
+If hooks aren't working, see **[HOOKS-TROUBLESHOOTING.md](HOOKS-TROUBLESHOOTING.md)** for detailed solutions.
+
+---
+
 ## 🚀 Quick Start
 
 ### Create an Application
